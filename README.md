@@ -21,8 +21,39 @@ $data = [
    'charset' => 'utf8'
 ];
 
-if (! Base::connect('mysql', $data))
+$opt = [
+	'debug' => true
+];
+
+if (! $pdo = Base::connect('mysql', $data, $opt))
 {
    die('Нет конекта.');
 }
+```
+
+## Select
+
+### Примеры выбора строки по её id
+
+```php
+// №1 Самый короткий способ 
+$row = Base::get('table', 1);
+
+// №2 Строчный
+$row = Base::get('table', '`id` = 1');
+
+// №3 Строчный безопасный
+$row = Base::get('table', '`id` = :id', [
+	'id' => 1
+]);
+
+// №4 Массивом
+$row = Base::get('table', [
+	'id' => 1
+]);
+
+// №5 Запросом
+$row = Base::query('SELECT * FROM `table` WHERE `id` = :id', [
+	'id' => 1
+]);
 ```
