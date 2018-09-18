@@ -14,15 +14,15 @@ composer require pandcar/base
 require 'vendor/autoload.php';
 
 $data = [
-	'host' => 'localhost',
-	'user' => 'root',
-	'pass' => '',
-	'base' => 'site-db',
-	'charset' => 'utf8'
+   'host' => 'localhost',
+   'user' => 'root',
+   'pass' => '',
+   'base' => 'site-db',
+   'charset' => 'utf8'
 ];
 
 if (! Base::connect('mysql', $data))
 {
-	die('Нет конекта.');
+   die('Нет конекта.');
 }
 ```
