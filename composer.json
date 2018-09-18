@@ -1,0 +1,17 @@
+{
+  "name": "pandcar/base",
+  "description": "Library for DB",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Oleg Isaev",
+      "email": "vazaxx@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0"
+  },
+  "autoload": {
+    "files": ["Base.php"]
+  }
+}
