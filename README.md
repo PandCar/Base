@@ -13,6 +13,9 @@ composer require pandcar/base
 ```php
 require 'vendor/autoload.php';
 
+// Включение отладки
+Base::$debug = 2;
+
 $data = [
    'host' => 'localhost',
    'user' => 'root',
@@ -21,14 +24,7 @@ $data = [
    'charset' => 'utf8'
 ];
 
-$opt = [
-   'debug' => true
-];
-
-if (! $pdo = Base::connect('mysql', $data, $opt))
-{
-   die('Нет конекта.');
-}
+$pdo = Base::connect('mysql', $data) or die('Нет подключения.');
 ```
 
 ## Select

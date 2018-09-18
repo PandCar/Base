@@ -3,16 +3,15 @@
 /**
  * @author Oleg Isaev
  * @contacts vk.com/id50416641, t.me/pandcar, github.com/pandcar
- * @version 2.1.8
+ * @version 2.3.1
  */
 
 class Base
 {
-    public static $pdo = false,		// Объект PDO
-				  $log = [],		// Лог
-				  $debug = false;	// Включение более полной отчётности в лог
+	public static	$pdo = false,	// Объект PDO
+					$debug = 0;		// Уровень отчётности
 	
-	protected static $transaction = false;
+	protected static	$transaction = false;
 	
 	// Начало транзакции
 	public static function transaction()
@@ -23,19 +22,19 @@ class Base
 				$bool = self::$pdo->beginTransaction();
 				self::$transaction = 0;
 				
-				self::$log[] = 'Transaction included'.(self::$debug ? "\n".(new \Exception)->getTraceAsString() : null);
+				self::info('Transaction included', 2);
 				
 				return $bool;
 			}
 			catch (\PDOException $e) {
-				self::$log[] = 'Transaction error'."\n".$e->getMessage().(self::$debug ? "\n".(new \Exception)->getTraceAsString() : null);
+				self::info('Transaction error'."\n".$e->getMessage(), 1);
 				
 				return false;
 			}
 		}
 		else
 		{
-			self::$log[] = 'Transaction'."\n".'No connection to the database or the transaction is already running'.(self::$debug ? "\n".(new \Exception)->getTraceAsString() : null);
+			self::info('Transaction'."\n".'No connection to the database or the transaction is already running', 1);
 		}
 		
 		return false;
@@ -53,7 +52,7 @@ class Base
 			{
 				self::$pdo->commit();
 				
-				self::$log[] = 'Commit successfully'.(self::$debug ? "\n".(new \Exception)->getTraceAsString() : null);
+				self::info('Commit successfully', 2);
 				
 				return true;
 			}
@@ -61,12 +60,12 @@ class Base
 			{
 				self::$pdo->rollBack();
 				
-				self::$log[] = 'Commit rollback'.(self::$debug ? "\n".(new \Exception)->getTraceAsString() : null);
+				self::info('Commit rollback', 1);
 			}
 		}
 		else
 		{
-			self::$log[] = 'Commit'."\n".'No connection to the database or transaction is not running'.(self::$debug ? "\n".(new \Exception)->getTraceAsString() : null);
+			self::info('Commit'."\n".'No connection to the database or transaction is not running', 1);
 		}
 		
 		return false;
@@ -129,9 +128,7 @@ class Base
 		if (self::$pdo)
 		{
 			try {
-				if (self::$debug) {
-					$time = microtime(true);
-				}
+				$time = microtime(true);
 				
 				if (! empty($param))
 				{
@@ -160,16 +157,14 @@ class Base
 					$stm = self::$pdo->query($str_sql);
 				}
 				
-				if (self::$debug) {
-					self::$log[] = 'Query time: '.number_format( microtime(true) - $time, 5).' sec'."\n".(new \Exception)->getTraceAsString();
-				}
+				self::info('Query time: '.number_format( microtime(true) - $time, 5).' sec', 2);
 			}
 			catch (\PDOException $e) {
 				if (is_int(self::$transaction)) {
 					self::$transaction++;
 				}
 				
-				self::$log[] = 'Query error'."\n".$e->getMessage().(self::$debug ? "\n".(new \Exception)->getTraceAsString() : null);
+				self::info('Query error'."\n".$e->getMessage(), 1);
 				
 				return false;
 			}
@@ -217,13 +212,8 @@ class Base
 	}
 	
 	// Подключение к базе данных
-	public static function connect($type = 'mysql', $param = [], $opt = [])
+	public static function connect($type = 'mysql', $param = [])
 	{
-		if (! empty($opt['debug']))
-		{
-			self::debug();
-		}
-		
 		switch ($type)
 		{
 			case 'mysql':
@@ -248,10 +238,10 @@ class Base
 					\PDO::ATTR_DEFAULT_FETCH_MODE	=> \PDO::FETCH_ASSOC,
 				]);
 				
-				self::$log[] = 'Successfully connected to the '.$type.' database'.(self::$debug ? "\n".(new \Exception)->getTraceAsString() : null);
+				self::info('Successfully connected to the '.$type.' database', 2);
 			}
 			catch (\PDOException $e) {
-				self::$log[] = 'Connect '.$type.' error'."\n".$e->getMessage().(self::$debug ? "\n".(new \Exception)->getTraceAsString() : null);
+				self::info('Connect '.$type.' error'."\n".$e->getMessage(), 1);
 				
 				return false;
 			}
@@ -268,24 +258,40 @@ class Base
 		return addslashes($string);
 	}
 	
-	// Debug
-	public static function debug()
-	{
-		self::$debug = true;
-		
-		register_shutdown_function(function(){
-			echo "<br>\n<br>\n<pre style='margin:2px;padding:7px;background-color: #FFF7B5;'>\n";
-			echo implode("\n------------\n", self::$log);
-			echo "\n</pre>";
-		});
-	}
-	
 	// Удаляем объект PDO
 	public static function end()
 	{
-		self::$log[] = 'End'."\n".(new \Exception)->getTraceAsString();
+		self::info('End', 2);
 		
 		self::$pdo = null;
+	}
+	
+	protected static function info($text, $level = 1)
+	{
+		if (self::$debug >= $level)
+		{
+			$trace = (new \Exception)->getTraceAsString();
+			
+			// Убираем из стека вызовов функции класса self, дабы не путаться а так же укорочиваем выводимый путь до файлов
+			$trace = preg_replace_callback(
+				"~#\d+ ((.+)\(\d+\):|)(.+)(\n|)~i",
+				function($matc){
+					static $num = -1;
+					if (empty($matc[1]) || $matc[2] == __FILE__){
+						return '';
+					}
+					$path = str_replace('\\', '/', $matc[1]);
+					if (isset($_SERVER['DOCUMENT_ROOT'])) {
+						$path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $path);
+					}
+					$num++;
+					return '#'.$num.' '.$path . $matc[3]."\n";
+				},
+				$trace
+			);
+			
+			echo "\n<pre style='margin:2px;padding:7px;background-color: #FFF7B5;'>\n".$text."\n".trim($trace)."\n</pre>\n";
+		}
 	}
 	
 	protected static function queryGenerator($stm)
