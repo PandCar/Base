@@ -9,7 +9,7 @@
 class Base
 {
     public static $pdo = false,		// Объект PDO
-				  $log = [],		// Лог 
+				  $log = [],		// Лог
 				  $debug = false;	// Включение более полной отчётности в лог
 	
 	protected static $transaction = false;
@@ -217,8 +217,13 @@ class Base
 	}
 	
 	// Подключение к базе данных
-	public static function connect($type = 'mysql', $param = [])
+	public static function connect($type = 'mysql', $param = [], $opt = [])
 	{
+		if (! empty($opt['debug']))
+		{
+			self::debug();
+		}
+		
 		switch ($type)
 		{
 			case 'mysql':
