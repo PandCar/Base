@@ -22,7 +22,7 @@ $data = [
 ];
 
 $opt = [
-	'debug' => true
+   'debug' => true
 ];
 
 if (! $pdo = Base::connect('mysql', $data, $opt))
@@ -44,16 +44,16 @@ $row = Base::get('table', '`id` = 1');
 
 // №3 Строчный безопасный
 $row = Base::get('table', '`id` = :id', [
-	'id' => 1
+   'id' => 1
 ]);
 
 // №4 Массивом
 $row = Base::get('table', [
-	'id' => 1
+   'id' => 1
 ]);
 
 // №5 Запросом
 $row = Base::query('SELECT * FROM `table` WHERE `id` = :id', [
-	'id' => 1
+   'id' => 1
 ]);
 ```
