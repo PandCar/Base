@@ -127,9 +127,23 @@ class Base
 	{
 		if (self::$pdo)
 		{
-			try {
-				$time = microtime(true);
+			$time = microtime(true);
+			$info = '';
+			
+			if (self::$debug > 0)
+			{
+				$param_info = [];
 				
+				foreach ($param as $key => $value)
+				{
+					$param_info[] = '['.$key.'] => '.$value;
+				}
+				
+				$info .= $str_sql."\n";
+				$info .= (! empty($param) ? implode("\n", $param_info)."\n" : null);
+			}
+			
+			try {
 				if (! empty($param))
 				{
 					$stm = self::$pdo->prepare($str_sql);
@@ -157,14 +171,14 @@ class Base
 					$stm = self::$pdo->query($str_sql);
 				}
 				
-				self::info('Query time: '.number_format( microtime(true) - $time, 5).' sec', 2);
+				self::info($info.'Time: '.number_format( microtime(true) - $time, 5).' sec', 2);
 			}
 			catch (\PDOException $e) {
 				if (is_int(self::$transaction)) {
 					self::$transaction++;
 				}
 				
-				self::info('Query error'."\n".$e->getMessage(), 1);
+				self::info('Query error '.$e->getMessage()."\n".trim($info), 1);
 				
 				return false;
 			}
