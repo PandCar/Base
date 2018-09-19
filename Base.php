@@ -3,7 +3,7 @@
 /**
  * @author Oleg Isaev
  * @contacts vk.com/id50416641, t.me/pandcar, github.com/pandcar
- * @version 2.3.1
+ * @version 2.3.2
  */
 
 class Base
