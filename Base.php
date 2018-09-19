@@ -245,8 +245,8 @@ class Base
                 ]);
                 
                 self::info('Successfully connected to the '.$type.' database', 2);
-				
-				return self::$pdo;
+                
+                return self::$pdo;
             }
             catch (\PDOException $e) {
                 self::info('Connect '.$type.' error'."\n".$e->getMessage(), 1);
