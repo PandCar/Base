@@ -14,6 +14,7 @@ composer require pandcar/base
 require 'vendor/autoload.php';
 
 // Включение отладки
+// 0 - выключено, 1 - только ошибки, 2 - полный отчёт
 Base::$debug = 2;
 
 $data = [
@@ -53,23 +54,23 @@ $row = Base::query('SELECT * FROM `table` WHERE `id` = :id AND `login` = :login 
 ]);
 ```
 
-### Другие результаты SELECT
+### Другие результаты
 
 ```php
 // Получение всех строк в виде массива
 $array = Base::query(
-	'SELECT * FROM `table` WHERE `id` > :id', [
-	   'id' => 5
-	],
-	'arr'
+    'SELECT * FROM `table` WHERE `id` > :id', [
+       'id' => 5
+    ],
+    'arr'
 );
 
 // Получение всех строк в виде генератора (в случаях когда не нужно грузить все данные разом в память)
 $generator = Base::query(
-	'SELECT * FROM `table` WHERE `id` > :id', [
-	   'id' => 5
-	],
-	'gen'
+    'SELECT * FROM `table` WHERE `id` > :id', [
+       'id' => 5
+    ],
+    'gen'
 );
 
 // Количество строк (короткий способ)
@@ -88,23 +89,23 @@ $count = Base::query('SELECT COUNT(`id`) FROM `table` WHERE `id` > :id', [
 ```php
 // Короткий способ, там где id = 5
 $bool = Base::update('table', 5, [
-	'email' => $new_email,
-	'pass' => $new_pass
+    'email' => $new_email,
+    'pass' => $new_pass
 ]);
 
 // Другие условия
 $bool = Base::update('table', [
-	'login' => $login
+    'login' => $login
 ], [
-	'email' => $new_email,
-	'pass' => $new_pass
+    'email' => $new_email,
+    'pass' => $new_pass
 ]);
 
 // Запросом
 $bool = Base::query('UPDATE `table` SET `email` = :email, `pass` = :pass WHERE `login` = :login', [
-	'email' => $new_email,
-	'pass' => $new_pass,
-	'login' => $login
+    'email' => $new_email,
+    'pass' => $new_pass,
+    'login' => $login
 ]);
 ```
 
@@ -113,16 +114,16 @@ $bool = Base::query('UPDATE `table` SET `email` = :email, `pass` = :pass WHERE `
 ```php
 // Короткий способ
 $insert_id = Base::add('table', [
-	'login' => $login,
-	'pass' => $pass,
-	'email' => $email
+    'login' => $login,
+    'pass' => $pass,
+    'email' => $email
 ]);
 
 // Запросом
 $insert_id = Base::query('INSERT INTO `table` (`login`, `pass`, `email`) VALUES (:login, :pass, :email)', [
-	'login' => $login,
-	'pass' => $pass,
-	'email' => $email
+    'login' => $login,
+    'pass' => $pass,
+    'email' => $email
 ]);
 ```
 
