@@ -32,10 +32,6 @@ class Base
                 return false;
             }
         }
-        else
-        {
-            self::info('Transaction'."\n".'No connection to the database or the transaction is already running', 1);
-        }
         
         return false;
     }
@@ -62,10 +58,6 @@ class Base
                 
                 self::info('Commit rollback', 1);
             }
-        }
-        else
-        {
-            self::info('Commit'."\n".'No connection to the database or transaction is not running', 1);
         }
         
         return false;
@@ -253,14 +245,12 @@ class Base
                 ]);
                 
                 self::info('Successfully connected to the '.$type.' database', 2);
+				
+				return self::$pdo;
             }
             catch (\PDOException $e) {
                 self::info('Connect '.$type.' error'."\n".$e->getMessage(), 1);
-                
-                return false;
             }
-            
-            return self::$pdo;
         }
         
         return false;
