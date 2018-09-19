@@ -29,27 +29,24 @@ $pdo = Base::connect('mysql', $data) or die('Нет подключения.');
 
 ## Select
 
-### Примеры выбора строки по её id
-
 ```php
-// №1 Самый короткий способ 
+// Самый короткий способ, выбор строки по её id
 $row = Base::get('table', 1);
 
-// №2 Строчный
-$row = Base::get('table', '`id` = 1');
-
-// №3 Строчный безопасный
-$row = Base::get('table', '`id` = :id', [
-   'id' => 1
-]);
-
-// №4 Массивом
+// Массивом
 $row = Base::get('table', [
-   'id' => 1
+   'id' => 1,
+   'login' => $login
 ]);
 
-// №5 Запросом
-$row = Base::query('SELECT * FROM `table` WHERE `id` = :id', [
-   'id' => 1
+// Более сложная логика
+$row = Base::get('table', 'id = 1 or login = :login', [
+   'login' => $login
+]);
+
+// Запросом с указанием типа
+$row = Base::query('SELECT * FROM `table` WHERE `id` = :id AND `login` = :login', [
+   'id/int' => 1,
+   'login' => $login
 ]);
 ```
