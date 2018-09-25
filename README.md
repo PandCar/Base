@@ -1,4 +1,4 @@
-# Base [![Latest Stable Version](https://poser.pugx.org/PandCar/Base/v/stable.svg)](https://packagist.org/packages/pandcar/base) [![Total Downloads](https://poser.pugx.org/PandCar/Base/downloads)](https://packagist.org/packages/pandcar/base) ![compatible](https://img.shields.io/badge/php-%3E=5.4-green.svg)
+# Base [![Latest Stable Version](https://poser.pugx.org/PandCar/Base/v/stable.svg)](https://packagist.org/packages/pandcar/base) [![Total Downloads](https://poser.pugx.org/PandCar/Base/downloads)](https://packagist.org/packages/pandcar/base) ![compatible](https://img.shields.io/badge/php-%3E=5.5-green.svg)
 
 ## Установка
 
@@ -30,13 +30,13 @@ $pdo = Base::connect('mysql', $data) or die('Нет подключения.');
 
 ## SELECT
 
-### Выбор 1-й строки
+### Выбор одной строки
 
 ```php
 // Самый короткий способ, по её id
 $row = Base::get('table', 1);
 
-// Массивом
+// Массивом, равенство через and
 $row = Base::get('table', [
    'id' => 1,
    'login' => $login
