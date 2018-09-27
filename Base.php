@@ -3,7 +3,7 @@
 /**
  * @author Oleg Isaev
  * @contacts vk.com/id50416641, t.me/pandcar, github.com/pandcar
- * @version 2.3.2
+ * @version 2.3.3
  */
 
 class Base
@@ -308,7 +308,7 @@ class Base
     
     protected static function genPartSql($mixed_var, $param = [], $glue = ', ', $prefix = '')
     {
-        if (is_int($mixed_var))
+        if (is_numeric($mixed_var))
         {
             $part_sql = '`id` = :id';
             $param = [
